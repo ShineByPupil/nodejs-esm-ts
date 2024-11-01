@@ -51,6 +51,69 @@ ReferenceError: __dirname is not defined in ES module scope
 
 </details>
 
+## ts 改造
+
+安装 typescript、ts-node、声明文件
+
+```bash
+npm i -D typescript ts-node @types/node @types/debug @types/express @types/cookie-parser @types/morgan
+```
+
+初始化ts配置文件
+
+```bash
+npx tsc --init
+```
+
+tsconfig.json 修改配置文件
+```diff
+{
+  "compilerOptions": {
+-    "module": "commonjs",
++    "module": "ESNext",
+  }
+}
+```
+package.json 修改配置文件
+```diff
+{
+  "scripts": {
+-   "start": "node ./bin/www"
++   "start": "node --loader ts-node/esm ./bin/www.ts"
+  },
+}
+```
+
+把文件扩展类型js文件修改ts，并解决ts语法错误
+
+<details>
+<summary>ts改造 过程中的问题</summary>
+
+Q:
+```plaintext
+TypeError [ERR_UNKNOWN_FILE_EXTENSION]: Unknown file extension ".ts" for xxx
+```
+A:运行命令改用ts-node
+
+Q:
+```plaintext
+node:internal/process/esm_loader:34
+      internalBinding('errors').triggerUncaughtException(
+                                ^
+[Object: null prototype] {
+  [Symbol(nodejs.util.inspect.custom)]: [Function: [nodejs.util.inspect.custom]]
+}
+```
+A:文件扩展类型js文件修改ts后，需要解决ts语法错误
+
+Q:
+```plaintext
+error TS2307: Cannot find module 'http' or its corresponding type declarations.
+```
+A:需要额外安装声明文件
+
+</details>
+
 ## 运行本地项目
 
 安装依赖
